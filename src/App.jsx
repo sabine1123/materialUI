@@ -1,14 +1,8 @@
-import React from "react";
-import { Button, Typography } from "@mui/material";
+import * as React from "react";
+import Permission from "./page/Permission";
+
 const App = () => {
-    return (
-        <div className='App'>
-            <Typography variant='h3'>Hello, This is my App</Typography>
-            <Button color='secondary' variant='contained'>
-                CLICK!!
-            </Button>
-        </div>
-    );
+    return <Permission />;
 };
 
 export default App;
