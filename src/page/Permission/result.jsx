@@ -1,5 +1,5 @@
 import * as React from "react";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 import { useDemoData } from "@mui/x-data-grid-generator";
 import {
     DataGrid,
@@ -17,6 +17,7 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
+import { AddButton, ModifyButton } from "../../component/TableButton";
 
 // function CustomPagination() {
 //     const apiRef = useGridApiContext();
@@ -90,9 +91,9 @@ const ExcelExportMenuItem = (props) => {
     );
 };
 
-ExcelExportMenuItem.propTypes = {
-    hideMenu: PropTypes.func,
-};
+// ExcelExportMenuItem.propTypes = {
+//     hideMenu: PropTypes.func,
+// };
 
 const CustomExportButton = (props) => (
     <GridToolbarExportContainer {...props}>
@@ -115,9 +116,9 @@ const Result = () => {
     //     maxColumns: 8,
     // });
     const RenderAuthority = (props) => {
-        const { hasFocus, value } = props;
-        const buttonElement = React.useRef(null);
-        const rippleRef = React.useRef(null);
+        // const { hasFocus, value } = props;
+        // const buttonElement = React.useRef(null);
+        // const rippleRef = React.useRef(null);
         const handleClick = (e) => {
             e.stopPropagation();
             console.log("click", props);
@@ -129,29 +130,37 @@ const Result = () => {
             <div>
                 <span>{text}</span>
                 {props.value === true ? (
-                    <Button
-                        component='button'
-                        ref={buttonElement}
-                        touchRippleRef={rippleRef}
-                        variant='contained'
-                        size='small'
-                        style={{ marginLeft: 16 }}
-                        onClick={handleClick}
-                    >
+                    <ModifyButton handleClick={handleClick}>
                         平台權限設定
-                    </Button>
+                    </ModifyButton>
                 ) : (
-                    <Button
-                        component='button'
-                        ref={buttonElement}
-                        touchRippleRef={rippleRef}
-                        // variant='contained'
-                        size='small'
-                        style={{ marginLeft: 16 }}
-                        onClick={handleClick}
-                    >
+                    <AddButton handleClick={handleClick}>
                         平台權限新增
-                    </Button>
+                    </AddButton>
+                )}
+            </div>
+        );
+    };
+
+    const RenderAccessControl = (props) => {
+        const handleClick = (e) => {
+            e.stopPropagation();
+            console.log("click", props);
+        };
+
+        const text = props.value === true ? "有效" : "無效";
+
+        return (
+            <div>
+                <span>{text}</span>
+                {props.value === true ? (
+                    <ModifyButton handleClick={handleClick}>
+                        門禁權限設定
+                    </ModifyButton>
+                ) : (
+                    <AddButton handleClick={handleClick}>
+                        門禁權限新增
+                    </AddButton>
                 )}
             </div>
         );
@@ -183,7 +192,12 @@ const Result = () => {
                 };
 
                 return (
-                    <Button variant='contained' size='small' onClick={onClick}>
+                    <Button
+                        color='secondary'
+                        variant='contained'
+                        size='small'
+                        onClick={onClick}
+                    >
                         編輯
                     </Button>
                 );
@@ -210,11 +224,7 @@ const Result = () => {
             field: "limit",
             headerName: "門禁權限",
             flex: 1,
-            // sortable: false,
-            // width: 160,
-            valueFormatter: (params) => {
-                return params.value === true ? "有效" : "無效";
-            },
+            renderCell: RenderAccessControl,
         },
     ];
     const rows = [
@@ -268,11 +278,45 @@ const Result = () => {
         },
     ];
 
+    const tableStyle = {
+        ".MuiDataGrid-columnHeaders": {
+            backgroundColor: "#606060",
+            color: "#fff",
+            ".MuiDataGrid-iconButtonContainer": {
+                svg: {
+                    color: "#ccc",
+                },
+            },
+        },
+        ".MuiDataGrid-columnSeparator": {
+            display: "none",
+        },
+        "&.MuiDataGrid-root": {
+            border: "none",
+        },
+        ".MuiDataGrid-toolbarContainer": {
+            padding: "10px 0",
+            justifyContent: "flex-end",
+        },
+        ".MuiDataGrid-cell": {
+            span: {
+                minWidth: "50px",
+                display: "inline-block",
+            },
+        },
+        ".MuiButton-text": {
+            border: "1px solid #468746",
+            color: "#468746",
+        },
+    };
+
     return (
         <div style={{ height: "60vh", width: "100%" }}>
             <DataGrid
                 // {...data}
                 // loading={loading}
+                // getRowHeight={() => "auto"}
+                sx={tableStyle}
                 rows={rows}
                 columns={columns}
                 components={{

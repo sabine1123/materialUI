@@ -17,19 +17,24 @@ const theme = createTheme(
         palette: {
             type: "light",
             primary: {
-                main: "#0f5e0f",
+                main: "#606060",
             },
             secondary: {
-                main: "#f39927",
+                // main: "#f39927",
+                main: "#468746",
             },
             text: {
                 primary: "#2d2828",
+                disabled: "#c7c7c7",
+                secondary: "#565656",
+                hint: "#000000",
             },
             // background: {
             //     default: "#f3f3f3",
             // },
             warning: {
-                main: "#f7e419",
+                // main: "#f7e419",
+                main: "#f39927",
             },
             success: {
                 main: "#95dc96",

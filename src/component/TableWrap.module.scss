@@ -1,0 +1,29 @@
+@import '../common/variables';
+
+.tableWrap {
+    border: 1px solid $secondary;
+    position: relative;
+    min-height: 100px;
+    margin-bottom: 50px;
+}
+
+.head {
+    background-color: $secondary;
+    color: #fff;
+    padding: 10px 15px;
+}
+
+.title {
+    font-size: 18px
+}
+
+.btnWrap {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    z-index: 10;
+}
+
+.content {
+    padding: 15px;
+}
