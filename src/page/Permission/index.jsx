@@ -13,6 +13,8 @@ import Select from "@mui/material/Select";
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 
+import SideMenu from "../../component/SideMenu";
+
 const DepartmentSelect = () => {
     const [age, setAge] = useState("");
 

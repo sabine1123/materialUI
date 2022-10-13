@@ -6,6 +6,7 @@ import { zhTW } from "@mui/x-data-grid";
 // import { zhTW as pickerszhTW } from "@mui/x-date-pickers";
 import { zhTW as corezhTW } from "@mui/material/locale";
 import CssBaseline from "@mui/material/CssBaseline";
+import { ProSidebarProvider } from "react-pro-sidebar";
 
 const theme = createTheme(
     {
@@ -91,6 +92,8 @@ const root = createRoot(container);
 root.render(
     <ThemeProvider theme={theme}>
         <CssBaseline />
-        <App />
+        <ProSidebarProvider>
+            <App />
+        </ProSidebarProvider>
     </ThemeProvider>
 );
