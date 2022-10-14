@@ -62,7 +62,7 @@ export const ToolButton = (props) => {
         <Button
             component='button'
             variant='outlined'
-            color='warning'
+            color='info'
             size='small'
             style={{ marginLeft: 16 }}
             onClick={handleClick}

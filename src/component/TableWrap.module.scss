@@ -1,14 +1,14 @@
 @import '../common/variables';
 
 .tableWrap {
-    border: 1px solid $secondary;
+    border: 1px solid $primary;
     position: relative;
     min-height: 100px;
     margin-bottom: 50px;
 }
 
 .head {
-    background-color: $secondary;
+    background-color: $primary;
     color: #fff;
     padding: 10px 15px;
 }

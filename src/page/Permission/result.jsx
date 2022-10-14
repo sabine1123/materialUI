@@ -305,8 +305,8 @@ const Result = () => {
             },
         },
         ".MuiButton-text": {
-            border: "1px solid #468746",
-            color: "#468746",
+            border: "1px solid #666",
+            color: "#666",
         },
     };
 

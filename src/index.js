@@ -18,29 +18,59 @@ const theme = createTheme(
         palette: {
             type: "light",
             primary: {
-                main: "#606060",
+                main: "#364968",
             },
             secondary: {
-                // main: "#f39927",
-                main: "#468746",
+                main: "#a5becc",
             },
             text: {
-                primary: "#2d2828",
+                primary: "#364968",
                 disabled: "#c7c7c7",
-                secondary: "#565656",
-                hint: "#000000",
+                secondary: "#a5becc",
+                hint: "#000",
             },
-            // background: {
-            //     default: "#f3f3f3",
-            // },
+            background: {
+                default: "#F9F9F9",
+            },
             warning: {
-                // main: "#f7e419",
-                main: "#f39927",
+                main: "#fddf97",
             },
             success: {
-                main: "#95dc96",
+                main: "#84acb6",
+            },
+            error: {
+                main: "#e09664",
+            },
+            info: {
+                main: "#fff",
             },
         },
+        // palette: {
+        //     type: "light",
+        //     primary: {
+        //         main: "#606060",
+        //     },
+        //     secondary: {
+        //         // main: "#f39927",
+        //         main: "#468746",
+        //     },
+        //     text: {
+        //         primary: "#2d2828",
+        //         disabled: "#c7c7c7",
+        //         secondary: "#565656",
+        //         hint: "#000000",
+        //     },
+        //     // background: {
+        //     //     default: "#f3f3f3",
+        //     // },
+        //     warning: {
+        //         // main: "#f7e419",
+        //         main: "#f39927",
+        //     },
+        //     success: {
+        //         main: "#95dc96",
+        //     },
+        // },
         props: {
             MuiButton: {
                 size: "small",
@@ -92,8 +122,6 @@ const root = createRoot(container);
 root.render(
     <ThemeProvider theme={theme}>
         <CssBaseline />
-        <ProSidebarProvider>
-            <App />
-        </ProSidebarProvider>
+        <App />
     </ThemeProvider>
 );
