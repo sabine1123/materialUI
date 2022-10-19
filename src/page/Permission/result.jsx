@@ -1,6 +1,4 @@
-import * as React from "react";
-// import PropTypes from "prop-types";
-import { useDemoData } from "@mui/x-data-grid-generator";
+import React, { useState } from "react";
 import {
     DataGrid,
     GridToolbarContainer,
@@ -17,7 +15,20 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
-import { AddButton, ModifyButton } from "../../component/TableButton";
+import {
+    AddButton,
+    ModifyButton,
+    EditButton,
+} from "../../component/TableButton";
+
+import MaintainPopup from "./MaintainPopup";
+
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 
 // function CustomPagination() {
 //     const apiRef = useGridApiContext();
@@ -110,11 +121,6 @@ const CustomToolbar = (props) => (
 );
 
 const Result = () => {
-    // const { data, loading } = useDemoData({
-    //     dataSet: "Commodity",
-    //     rowLength: 20,
-    //     maxColumns: 8,
-    // });
     const RenderAuthority = (props) => {
         // const { hasFocus, value } = props;
         // const buttonElement = React.useRef(null);
@@ -165,43 +171,39 @@ const Result = () => {
             </div>
         );
     };
+
+    const RenderMaintain = (props) => {
+        console.log("props----------", props);
+        const onClick = (e) => {
+            e.stopPropagation(); // don't select this row after clicking
+
+            const api = props.api;
+            const thisRow = {};
+
+            api.getAllColumns()
+                .filter((c) => c.field !== "__check__" && !!c)
+                .forEach(
+                    (c) =>
+                        (thisRow[c.field] = props.getValue(props.id, c.field))
+                );
+
+            return alert(JSON.stringify(thisRow, null, 4));
+        };
+
+        return (
+            <div>
+                <EditButton handleClick={onClick}>編輯</EditButton>
+            </div>
+        );
+    };
+
     const columns = [
         {
             field: "action",
             headerName: "維護",
             sortable: false,
             // flex: 1,
-            renderCell: (params) => {
-                const onClick = (e) => {
-                    e.stopPropagation(); // don't select this row after clicking
-
-                    const api = params.api;
-                    const thisRow = {};
-
-                    api.getAllColumns()
-                        .filter((c) => c.field !== "__check__" && !!c)
-                        .forEach(
-                            (c) =>
-                                (thisRow[c.field] = params.getValue(
-                                    params.id,
-                                    c.field
-                                ))
-                        );
-
-                    return alert(JSON.stringify(thisRow, null, 4));
-                };
-
-                return (
-                    <Button
-                        color='secondary'
-                        variant='contained'
-                        size='small'
-                        onClick={onClick}
-                    >
-                        編輯
-                    </Button>
-                );
-            },
+            renderCell: RenderMaintain,
         },
         { field: "dep", headerName: "部門名稱", flex: 1 },
         { field: "job", headerName: "職務名稱", flex: 1 },
@@ -279,18 +281,18 @@ const Result = () => {
     ];
 
     const tableStyle = {
-        ".MuiDataGrid-columnHeaders": {
-            backgroundColor: "#606060",
-            color: "#fff",
-            ".MuiDataGrid-iconButtonContainer": {
-                svg: {
-                    color: "#ccc",
-                },
-            },
-        },
-        ".MuiDataGrid-columnSeparator": {
-            display: "none",
-        },
+        // ".MuiDataGrid-columnHeaders": {
+        //     backgroundColor: "#606060",
+        //     color: "#fff",
+        //     ".MuiDataGrid-iconButtonContainer": {
+        //         svg: {
+        //             color: "#ccc",
+        //         },
+        //     },
+        // },
+        // ".MuiDataGrid-columnSeparator": {
+        //     display: "none",
+        // },
         "&.MuiDataGrid-root": {
             border: "none",
         },
@@ -299,15 +301,26 @@ const Result = () => {
             justifyContent: "flex-end",
         },
         ".MuiDataGrid-cell": {
-            span: {
-                minWidth: "50px",
-                display: "inline-block",
+            ">div": {
+                ">span": {
+                    minWidth: "50px",
+                    display: "inline-block",
+                },
             },
         },
-        ".MuiButton-text": {
-            border: "1px solid #666",
-            color: "#666",
-        },
+        // ".MuiButton-text": {
+        //     border: "1px solid #666",
+        //     color: "#666",
+        // },
+    };
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     };
 
     return (
@@ -327,6 +340,8 @@ const Result = () => {
                 pageSize={10}
                 rowsPerPageOptions={[10, 25, 50]}
             />
+
+            <MaintainPopup />
         </div>
     );
 };

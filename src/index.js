@@ -18,33 +18,63 @@ const theme = createTheme(
         palette: {
             type: "light",
             primary: {
-                main: "#364968",
+                main: "#226b80",
             },
             secondary: {
-                main: "#a5becc",
+                main: "#40a798",
             },
             text: {
-                primary: "#364968",
-                disabled: "#c7c7c7",
-                secondary: "#a5becc",
-                hint: "#000",
+                primary: "#000000",
+                disabled: "#dcd8dc",
+                secondary: "#373545",
+                hint: "#000000",
             },
             background: {
-                default: "#F9F9F9",
+                default: "#ffffff",
             },
             warning: {
-                main: "#fddf97",
+                main: "#FFC93C",
             },
             success: {
-                main: "#84acb6",
+                main: "#FDDF97",
             },
             error: {
-                main: "#e09664",
+                main: "#FF731D",
             },
             info: {
-                main: "#fff",
+                main: "#00334e",
             },
         },
+        // palette: {
+        //     type: "light",
+        //     primary: {
+        //         main: "#364968",
+        //     },
+        //     secondary: {
+        //         main: "#a5becc",
+        //     },
+        //     text: {
+        //         primary: "#364968",
+        //         disabled: "#c7c7c7",
+        //         secondary: "#a5becc",
+        //         hint: "#000",
+        //     },
+        //     background: {
+        //         default: "#F9F9F9",
+        //     },
+        //     warning: {
+        //         main: "#fddf97",
+        //     },
+        //     success: {
+        //         main: "#84acb6",
+        //     },
+        //     error: {
+        //         main: "#e09664",
+        //     },
+        //     info: {
+        //         main: "#fff",
+        //     },
+        // },
         // palette: {
         //     type: "light",
         //     primary: {
