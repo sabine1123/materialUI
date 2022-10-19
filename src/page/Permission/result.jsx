@@ -30,6 +30,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
+// import { GridCsvExportOptions } from "@mui/x-data-grid";
+
 // function CustomPagination() {
 //     const apiRef = useGridApiContext();
 //     const page = useGridSelector(apiRef, gridPageSelector);
@@ -102,14 +104,21 @@ const ExcelExportMenuItem = (props) => {
     );
 };
 
-// ExcelExportMenuItem.propTypes = {
-//     hideMenu: PropTypes.func,
-// };
-
 const CustomExportButton = (props) => (
     <GridToolbarExportContainer {...props}>
-        <GridCsvExportMenuItem />
-        <GridPrintExportMenuItem />
+        <GridCsvExportMenuItem
+            options={{
+                fileName: "customerDataBase",
+                utf8WithBom: true,
+            }}
+        />
+        <GridPrintExportMenuItem
+        // options={{
+        //     hideFooter: true,
+        //     hideToolbar: true,
+        //     fields: ["dep", "job", "status", "authority", "limit"],
+        // }}
+        />
         <ExcelExportMenuItem />
     </GridToolbarExportContainer>
 );
@@ -220,12 +229,18 @@ const Result = () => {
             headerName: "平台權限",
             flex: 1,
             // width: 160,
+            valueFormatter: (params) => {
+                return params.value === true ? "有效" : "未設定";
+            },
             renderCell: RenderAuthority,
         },
         {
             field: "limit",
             headerName: "門禁權限",
             flex: 1,
+            valueFormatter: (params) => {
+                return params.value === true ? "有效" : "無效";
+            },
             renderCell: RenderAccessControl,
         },
     ];
@@ -308,19 +323,9 @@ const Result = () => {
                 },
             },
         },
-        // ".MuiButton-text": {
-        //     border: "1px solid #666",
-        //     color: "#666",
+        // "@media print": {
+        //     ".MuiDataGrid-main": { color: "#000", maxWidth: 700 },
         // },
-    };
-    const [open, setOpen] = React.useState(false);
-
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
     };
 
     return (
@@ -336,6 +341,14 @@ const Result = () => {
                     Toolbar: CustomToolbar,
                     // Pagination: CustomPagination,
                 }}
+                // componentsProps={{
+                //     toolbar: {
+                //         csvOptions: {
+                //             getRowsToExport: () =>
+                //                 gridFilteredSortedRowIdsSelector(apiRef),
+                //         },
+                //     },
+                // }}
                 pagination
                 pageSize={10}
                 rowsPerPageOptions={[10, 25, 50]}
