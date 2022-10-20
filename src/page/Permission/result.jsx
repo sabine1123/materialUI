@@ -23,13 +23,7 @@ import {
 
 import MaintainPopup from "./MaintainPopup";
 
-import TextField from "@mui/material/TextField";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-
+import ExcelJs from "exceljs";
 // import { GridCsvExportOptions } from "@mui/x-data-grid";
 
 // function CustomPagination() {
@@ -47,56 +41,62 @@ import DialogTitle from "@mui/material/DialogTitle";
 //     );
 // }
 
-const getJson = (apiRef) => {
-    // Select rows and columns
-    const filteredSortedRowIds = gridFilteredSortedRowIdsSelector(apiRef);
-    const visibleColumnsField = gridVisibleColumnFieldsSelector(apiRef);
-
-    // Format the data. Here we only keep the value
-    const data = filteredSortedRowIds.map((id) => {
-        const row = {};
-        visibleColumnsField.forEach((field) => {
-            row[field] = apiRef.current.getCellParams(id, field).value;
-        });
-        return row;
-    });
-
-    // Stringify with some indentation
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify#parameters
-    return JSON.stringify(data, null, 2);
-};
-
-const exportBlob = (blob, filename) => {
-    // Save the blob in a json file
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    a.click();
-
-    setTimeout(() => {
-        URL.revokeObjectURL(url);
-    });
-};
-
 const ExcelExportMenuItem = (props) => {
-    const apiRef = useGridApiContext();
-
     const { hideMenu } = props;
 
     return (
         <MenuItem
             onClick={() => {
-                const jsonString = getJson(apiRef);
-                const blob = new Blob([jsonString], {
-                    type: "text/json",
+                const workbook = new ExcelJs.Workbook();
+                const sheet = workbook.addWorksheet("職務權限設定清單", {
+                    //列印設定
+                    // pageSetup: {
+                    //     printArea: "A1:B3",
+                    // },
                 });
 
-                exportBlob(blob, "DataGrid_demo.json");
+                sheet.addTable({
+                    style: {
+                        theme: null,
+                        // showRowStripes: true,
+                    },
+                    // 在工作表裡面指定位置、格式並用columsn與rows屬性填寫內容
+                    name: "table1", // 表格內看不到的，算是key值，讓你之後想要針對這個table去做額外設定的時候，可以指定到這個table
+                    ref: "A1", // 從A1開始
+                    columns: [
+                        { name: "名字" },
+                        { name: "年齡" },
+                        { name: "電話" },
+                    ],
+                    rows: [
+                        ["小明", "20", "0987654321"],
+                        ["小美", "23", "0912345678"],
+                        ["小明", "20", "0987654321"],
+                        ["小美", "23", "0912345678"],
+                        ["小明", "20", "0987654321"],
+                        ["小美", "23", "0912345678"],
+                        ["小明", "20", "0987654321"],
+                        ["小美", "23", "0912345678"],
+                    ],
+                });
 
-                // Hide the export menu after the export
-                // hideMenu?.();
+                sheet.getColumn(1).width = 10;
+                sheet.getColumn(2).width = 10;
+                sheet.getColumn(3).width = 30;
+                sheet.getColumn(1).hidden = true; //可隱藏
+
+                workbook.xlsx.writeBuffer().then((content) => {
+                    const link = document.createElement("a");
+                    const blobData = new Blob([content], {
+                        type: "application/vnd.ms-excel;charset=utf-8;",
+                    });
+                    link.download = "職務權限設定清單.xlsx";
+                    link.href = URL.createObjectURL(blobData);
+                    link.click();
+                });
+
+                // 關閉匯出menu
+                hideMenu();
             }}
         >
             匯出Excel
@@ -182,7 +182,6 @@ const Result = () => {
     };
 
     const RenderMaintain = (props) => {
-        console.log("props----------", props);
         const onClick = (e) => {
             e.stopPropagation(); // don't select this row after clicking
 
