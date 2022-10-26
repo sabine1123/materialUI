@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     DataGrid,
     GridToolbarContainer,
@@ -43,7 +43,34 @@ import ExcelJs from "exceljs";
 
 const ExcelExportMenuItem = (props) => {
     const { hideMenu } = props;
+    const requestUrl = "http://localhost:3005/data";
+    const [data, setData] = useState();
+    const [exportData, setExportData] = useState();
 
+    useEffect(() => {
+        fetch(requestUrl, {})
+            .then((response) => {
+                // 這裡會得到一個 ReadableStream 的物件
+                console.log(response);
+                // 可以透過 blob(), json(), text() 轉成可用的資訊
+                return response.json();
+            })
+            .then((jsonData) => {
+                setData(jsonData);
+            })
+            .catch((err) => {
+                console.log("錯誤:", err);
+            });
+        console.log("execute function in useEffect");
+    }, []);
+    if (data) {
+        const exportData = data.map((item, idx) => {
+            return Object.values(item);
+        });
+        setExportData(setExportData);
+        // // console.log("exportData----", exportData);
+        console.log("export------", exportData);
+    }
     return (
         <MenuItem
             onClick={() => {
@@ -68,22 +95,23 @@ const ExcelExportMenuItem = (props) => {
                         { name: "年齡" },
                         { name: "電話" },
                     ],
-                    rows: [
-                        ["小明", "20", "0987654321"],
-                        ["小美", "23", "0912345678"],
-                        ["小明", "20", "0987654321"],
-                        ["小美", "23", "0912345678"],
-                        ["小明", "20", "0987654321"],
-                        ["小美", "23", "0912345678"],
-                        ["小明", "20", "0987654321"],
-                        ["小美", "23", "0912345678"],
-                    ],
+                    rows: exportData,
+                    // rows: [
+                    //     ["小明", "20", "0987654321"],
+                    //     ["小美", "23", "0912345678"],
+                    //     ["小明", "20", "0987654321"],
+                    //     ["小美", "23", "0912345678"],
+                    //     ["小明", "20", "0987654321"],
+                    //     ["小美", "23", "0912345678"],
+                    //     ["小明", "20", "0987654321"],
+                    //     ["小美", "23", "0912345678"],
+                    // ],
                 });
 
                 sheet.getColumn(1).width = 10;
                 sheet.getColumn(2).width = 10;
                 sheet.getColumn(3).width = 30;
-                sheet.getColumn(1).hidden = true; //可隱藏
+                // sheet.getColumn(1).hidden = true; //可隱藏
 
                 workbook.xlsx.writeBuffer().then((content) => {
                     const link = document.createElement("a");
@@ -130,6 +158,27 @@ const CustomToolbar = (props) => (
 );
 
 const Result = () => {
+    const requestUrl = "http://localhost:3005/data";
+    const [data, setData] = useState();
+
+    useEffect(() => {
+        fetch(requestUrl, {})
+            .then((response) => {
+                // 這裡會得到一個 ReadableStream 的物件
+                console.log(response);
+                // 可以透過 blob(), json(), text() 轉成可用的資訊
+                return response.json();
+            })
+            .then((jsonData) => {
+                console.log("-----------", jsonData);
+                setData(jsonData);
+            })
+            .catch((err) => {
+                console.log("錯誤:", err);
+            });
+        console.log("execute function in useEffect");
+    }, []);
+
     const RenderAuthority = (props) => {
         // const { hasFocus, value } = props;
         // const buttonElement = React.useRef(null);
@@ -213,6 +262,7 @@ const Result = () => {
             // flex: 1,
             renderCell: RenderMaintain,
         },
+        // { field: "id", headerName: "id", width: 50 },
         { field: "dep", headerName: "部門名稱", flex: 1 },
         { field: "job", headerName: "職務名稱", flex: 1 },
         {
@@ -285,8 +335,56 @@ const Result = () => {
             limit: true,
         },
         {
-            id: 5,
+            id: 6,
             dep: "營運部",
+            job: "主管",
+            status: true,
+            authority: false,
+            limit: true,
+        },
+        {
+            id: 7,
+            dep: "2系統管理部",
+            job: "職員",
+            status: true,
+            authority: false,
+            limit: false,
+        },
+        {
+            id: 8,
+            dep: "2客務服務部",
+            job: "職員",
+            status: true,
+            authority: true,
+            limit: false,
+        },
+        {
+            id: 9,
+            dep: "2營運部",
+            job: "職員",
+            status: true,
+            authority: false,
+            limit: true,
+        },
+        {
+            id: 10,
+            dep: "2系統管理部",
+            job: "主管",
+            status: false,
+            authority: true,
+            limit: true,
+        },
+        {
+            id: 11,
+            dep: "2客務服務部",
+            job: "主管",
+            status: true,
+            authority: true,
+            limit: true,
+        },
+        {
+            id: 12,
+            dep: "2營運部",
             job: "主管",
             status: true,
             authority: false,
@@ -328,30 +426,32 @@ const Result = () => {
     };
 
     return (
-        <div style={{ height: "60vh", width: "100%" }}>
-            <DataGrid
-                // {...data}
-                // loading={loading}
-                // getRowHeight={() => "auto"}
-                sx={tableStyle}
-                rows={rows}
-                columns={columns}
-                components={{
-                    Toolbar: CustomToolbar,
-                    // Pagination: CustomPagination,
-                }}
-                // componentsProps={{
-                //     toolbar: {
-                //         csvOptions: {
-                //             getRowsToExport: () =>
-                //                 gridFilteredSortedRowIdsSelector(apiRef),
-                //         },
-                //     },
-                // }}
-                pagination
-                pageSize={10}
-                rowsPerPageOptions={[10, 25, 50]}
-            />
+        <div style={{ height: "70vh", width: "100%" }}>
+            {data && (
+                <DataGrid
+                    // {...data}
+                    // loading={loading}
+                    // getRowHeight={() => "auto"}
+                    sx={tableStyle}
+                    rows={data}
+                    columns={columns}
+                    components={{
+                        Toolbar: CustomToolbar,
+                        // Pagination: CustomPagination,
+                    }}
+                    // componentsProps={{
+                    //     toolbar: {
+                    //         csvOptions: {
+                    //             getRowsToExport: () =>
+                    //                 gridFilteredSortedRowIdsSelector(apiRef),
+                    //         },
+                    //     },
+                    // }}
+                    pagination
+                    pageSize={10}
+                    rowsPerPageOptions={[10, 25, 50]}
+                />
+            )}
 
             <MaintainPopup />
         </div>
