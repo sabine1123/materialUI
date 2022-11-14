@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Result from "./result";
 import TableWrap from "../../component/TableWrap";
 import { ToolButton } from "../../component/TableButton";
@@ -14,6 +14,8 @@ import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
 
 import SideMenu from "../../component/SideMenu";
+
+import { apiData } from "../../utils/getApi.js";
 
 const DepartmentSelect = () => {
     const [age, setAge] = useState("");
@@ -79,6 +81,24 @@ const DepartmentSelect = () => {
 };
 
 const Permission = () => {
+    const requestUrl = "http://localhost:3005/data";
+    const [data, setData] = useState();
+
+    useEffect(() => {
+        async function getData() {
+            try {
+                const item = await apiData();
+                console.log("item-----", item);
+                setData(item.data);
+                return { item };
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        console.log(getData());
+        console.log("execute function in useEffect");
+    }, []);
     const reloadClick = (e) => {
         e.stopPropagation();
         console.log("reloadClick");
@@ -116,7 +136,7 @@ const Permission = () => {
                         全螢幕
                     </ToolButton>
                 </div>
-                <Result />
+                <Result getData={data} />
             </TableWrap>
         </>
     );

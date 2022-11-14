@@ -41,143 +41,107 @@ import ExcelJs from "exceljs";
 //     );
 // }
 
-const ExcelExportMenuItem = (props) => {
-    const { hideMenu } = props;
-    const requestUrl = "http://localhost:3005/data";
-    const [data, setData] = useState();
-    const [exportData, setExportData] = useState();
+const Result = (props) => {
+    const { getData } = props;
 
-    useEffect(() => {
-        fetch(requestUrl, {})
-            .then((response) => {
-                // 這裡會得到一個 ReadableStream 的物件
-                console.log(response);
-                // 可以透過 blob(), json(), text() 轉成可用的資訊
-                return response.json();
-            })
-            .then((jsonData) => {
-                setData(jsonData);
-            })
-            .catch((err) => {
-                console.log("錯誤:", err);
-            });
-        console.log("execute function in useEffect");
-    }, []);
-    if (data) {
-        const exportData = data.map((item, idx) => {
-            return Object.values(item);
-        });
-        setExportData(setExportData);
-        // // console.log("exportData----", exportData);
-        console.log("export------", exportData);
-    }
-    return (
-        <MenuItem
-            onClick={() => {
-                const workbook = new ExcelJs.Workbook();
-                const sheet = workbook.addWorksheet("職務權限設定清單", {
-                    //列印設定
-                    // pageSetup: {
-                    //     printArea: "A1:B3",
-                    // },
-                });
+    const ExcelExportMenuItem = (props) => {
+        const { hideMenu } = props;
 
-                sheet.addTable({
-                    style: {
-                        theme: null,
-                        // showRowStripes: true,
-                    },
-                    // 在工作表裡面指定位置、格式並用columsn與rows屬性填寫內容
-                    name: "table1", // 表格內看不到的，算是key值，讓你之後想要針對這個table去做額外設定的時候，可以指定到這個table
-                    ref: "A1", // 從A1開始
-                    columns: [
-                        { name: "名字" },
-                        { name: "年齡" },
-                        { name: "電話" },
-                    ],
-                    rows: exportData,
-                    // rows: [
-                    //     ["小明", "20", "0987654321"],
-                    //     ["小美", "23", "0912345678"],
-                    //     ["小明", "20", "0987654321"],
-                    //     ["小美", "23", "0912345678"],
-                    //     ["小明", "20", "0987654321"],
-                    //     ["小美", "23", "0912345678"],
-                    //     ["小明", "20", "0987654321"],
-                    //     ["小美", "23", "0912345678"],
-                    // ],
-                });
+        return (
+            <MenuItem
+                onClick={() => {
+                    if (getData) {
+                        const toText = getData.map((i) => {
+                            const text = {
+                                ...i,
+                                authority: i.authority ? "已設定" : "未設定",
+                                limit: i.limit ? "有效" : "無效",
+                                status: i.status ? "有效" : "無效",
+                            };
+                            return text;
+                        });
+                        const datas = toText.map((item, idx) => {
+                            return Object.values(item);
+                        });
 
-                sheet.getColumn(1).width = 10;
-                sheet.getColumn(2).width = 10;
-                sheet.getColumn(3).width = 30;
-                // sheet.getColumn(1).hidden = true; //可隱藏
+                        const workbook = new ExcelJs.Workbook();
+                        const sheet = workbook.addWorksheet(
+                            "職務權限設定清單",
+                            {
+                                //列印設定
+                                // pageSetup: {
+                                //     printArea: "A1:B3",
+                                // },
+                            }
+                        );
 
-                workbook.xlsx.writeBuffer().then((content) => {
-                    const link = document.createElement("a");
-                    const blobData = new Blob([content], {
-                        type: "application/vnd.ms-excel;charset=utf-8;",
-                    });
-                    link.download = "職務權限設定清單.xlsx";
-                    link.href = URL.createObjectURL(blobData);
-                    link.click();
-                });
+                        sheet.addTable({
+                            style: {
+                                theme: null,
+                                // showRowStripes: true,
+                            },
+                            // 在工作表裡面指定位置、格式並用columsn與rows屬性填寫內容
+                            name: "table1", // 表格內看不到的，算是key值，讓你之後想要針對這個table去做額外設定的時候，可以指定到這個table
+                            ref: "A1", // 從A1開始
+                            columns: [
+                                { name: "id" },
+                                { name: "部門名稱" },
+                                { name: "職位名稱" },
+                                { name: "部門職務狀態" },
+                                { name: "平台權限" },
+                                { name: "門禁權限" },
+                            ],
+                            rows: datas,
+                        });
 
-                // 關閉匯出menu
-                hideMenu();
-            }}
-        >
-            匯出Excel
-        </MenuItem>
+                        sheet.getColumn(1).width = 10;
+                        sheet.getColumn(2).width = 10;
+                        sheet.getColumn(3).width = 30;
+                        // sheet.getColumn(1).hidden = true; //可隱藏
+
+                        workbook.xlsx.writeBuffer().then((content) => {
+                            const link = document.createElement("a");
+                            const blobData = new Blob([content], {
+                                type: "application/vnd.ms-excel;charset=utf-8;",
+                            });
+                            link.download = "職務權限設定清單.xlsx";
+                            link.href = URL.createObjectURL(blobData);
+                            link.click();
+                        });
+                    }
+                    // 關閉匯出menu
+                    hideMenu();
+                }}
+            >
+                匯出Excel
+            </MenuItem>
+        );
+    };
+
+    const CustomExportButton = (props) => (
+        <GridToolbarExportContainer {...props}>
+            <GridCsvExportMenuItem
+                options={{
+                    fileName: "customerDataBase",
+                    utf8WithBom: true,
+                }}
+            />
+            <GridPrintExportMenuItem
+            // options={{
+            //     hideFooter: true,
+            //     hideToolbar: true,
+            //     fields: ["dep", "job", "status", "authority", "limit"],
+            // }}
+            />
+            <ExcelExportMenuItem />
+        </GridToolbarExportContainer>
     );
-};
 
-const CustomExportButton = (props) => (
-    <GridToolbarExportContainer {...props}>
-        <GridCsvExportMenuItem
-            options={{
-                fileName: "customerDataBase",
-                utf8WithBom: true,
-            }}
-        />
-        <GridPrintExportMenuItem
-        // options={{
-        //     hideFooter: true,
-        //     hideToolbar: true,
-        //     fields: ["dep", "job", "status", "authority", "limit"],
-        // }}
-        />
-        <ExcelExportMenuItem />
-    </GridToolbarExportContainer>
-);
-
-const CustomToolbar = (props) => (
-    <GridToolbarContainer {...props}>
-        <CustomExportButton />
-    </GridToolbarContainer>
-);
-
-const Result = () => {
-    const requestUrl = "http://localhost:3005/data";
-    const [data, setData] = useState();
-
-    useEffect(() => {
-        fetch(requestUrl, {})
-            .then((response) => {
-                // 這裡會得到一個 ReadableStream 的物件
-                console.log(response);
-                // 可以透過 blob(), json(), text() 轉成可用的資訊
-                return response.json();
-            })
-            .then((jsonData) => {
-                console.log("-----------", jsonData);
-                setData(jsonData);
-            })
-            .catch((err) => {
-                console.log("錯誤:", err);
-            });
-        console.log("execute function in useEffect");
-    }, []);
+    const CustomToolbar = (props) => (
+        <GridToolbarContainer {...props}>
+            <CustomExportButton />
+        </GridToolbarContainer>
+    );
 
     const RenderAuthority = (props) => {
         // const { hasFocus, value } = props;
@@ -427,13 +391,14 @@ const Result = () => {
 
     return (
         <div style={{ height: "70vh", width: "100%" }}>
-            {data && (
+            {getData && (
                 <DataGrid
                     // {...data}
                     // loading={loading}
                     // getRowHeight={() => "auto"}
                     sx={tableStyle}
-                    rows={data}
+                    rows={getData}
+                    // rows={rows}
                     columns={columns}
                     components={{
                         Toolbar: CustomToolbar,
@@ -452,7 +417,6 @@ const Result = () => {
                     rowsPerPageOptions={[10, 25, 50]}
                 />
             )}
-
             <MaintainPopup />
         </div>
     );
