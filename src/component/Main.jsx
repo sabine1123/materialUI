@@ -2,6 +2,8 @@ import * as React from "react";
 import styles from "../common/Common.module.scss";
 import Permission from "../page/Permission";
 import Button from "@mui/material/Button";
+import { Routes, Route } from "react-router-dom";
+import Test from "../page/Test";
 
 const Main = ({ handleToggleSidebar, handleCollapsedChange }) => {
     const onClick = (e) => {
@@ -19,7 +21,11 @@ const Main = ({ handleToggleSidebar, handleCollapsedChange }) => {
             >
                 Toggle
             </Button>
-            <Permission />
+
+            <Routes>
+                <Route path='/test' element={<Test />} />
+                <Route path='/' element={<Permission />} />
+            </Routes>
         </div>
     );
 };

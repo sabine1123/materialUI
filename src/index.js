@@ -8,6 +8,12 @@ import { zhTW as corezhTW } from "@mui/material/locale";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ProSidebarProvider } from "react-pro-sidebar";
 
+// import {
+//     createBrowserRouter,
+//     RouterProvider,
+//     Route,
+//   } from "react-router-dom";
+import { BrowserRouter } from "react-router-dom";
 const theme = createTheme(
     {
         typography: {
@@ -150,8 +156,10 @@ const theme = createTheme(
 const container = document.getElementById("root");
 const root = createRoot(container);
 root.render(
-    <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-    </ThemeProvider>
+    <BrowserRouter>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <App />
+        </ThemeProvider>
+    </BrowserRouter>
 );

@@ -20,6 +20,9 @@ import {
     FaSignOutAlt,
 } from "react-icons/fa";
 import LogoImg from "../assets/logo.png";
+
+import { Link } from "react-router-dom";
+
 import "./Aside.scss";
 
 const Aside = ({ toggled, handleToggleSidebar }) => {
@@ -30,12 +33,16 @@ const Aside = ({ toggled, handleToggleSidebar }) => {
             onToggle={handleToggleSidebar}
         >
             <SidebarHeader>
-                <img src={LogoImg} alt='logo' className='logo' />
+                <Link to={"/"}>
+                    <img src={LogoImg} alt='logo' className='logo' />
+                </Link>
             </SidebarHeader>
             <SidebarContent>
                 <Menu>
                     <SubMenu icon={<FaGlobe />} title='儀表板'>
-                        <MenuItem>媽媽房備註</MenuItem>
+                        <Link to={"/test"}>
+                            <MenuItem>媽媽房備註</MenuItem>
+                        </Link>
                     </SubMenu>
                     <SubMenu icon={<FaPuzzlePiece />} title='權限管理'>
                         <MenuItem>員工列表</MenuItem>
